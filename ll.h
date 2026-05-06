@@ -27,6 +27,30 @@
 
 #include <stdlib.h>
 
+#define ll_append(node, item)                                                  \
+  do {                                                                         \
+    ll_set_tail(node);                                                         \
+    ll_insert_after(node, item);                                               \
+  } while (0)
+
+#define ll_append_front(node, item)                                            \
+  do {                                                                         \
+    ll_set_head(node);                                                         \
+    ll_insert_before(node, item);                                              \
+  } while (0)
+
+#define ll_append_fixed(type, node, item)                                      \
+  do {                                                                         \
+    type *tail = ll_get_tail(type, node);                                      \
+    ll_insert_afer(tail, item);                                                \
+  } while (0)
+
+#define ll_append_front_fixed(type, node, item)                                \
+  do {                                                                         \
+    type *head = ll_get_head(type, node);                                      \
+    ll_insert_before(head, item);                                              \
+  } while (0)
+
 #define ll_insert_after(node, item)                                            \
   do {                                                                         \
     (item)->next = (node)->next;                                               \
