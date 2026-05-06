@@ -79,12 +79,15 @@
     }                                                                          \
   } while (0)
 
+#define ll_iter(item) (item) = (item)->next
+#define ll_iter_back(item) (item) = (item)->prev
+
 #define ll_count(type, head)                                                   \
   ({                                                                           \
     size_t count    = 0;                                                       \
     type *it_##type = (head);                                                  \
     while (it_##type) {                                                        \
-      it_##type = it_##type->next;                                             \
+      ll_iter(it##type);                                                       \
       ++count;                                                                 \
     }                                                                          \
     count;                                                                     \
@@ -95,23 +98,23 @@
     size_t count    = 0;                                                       \
     type *it_##type = (tail);                                                  \
     while (it_##type) {                                                        \
-      it_##type = it_##type->prev;                                             \
+      ll_iter_back(it##type);                                                  \
       ++count;                                                                 \
     }                                                                          \
     count;                                                                     \
   })
 
 #define ll_foreach(type, item, head)                                           \
-  for (type * (item) = (head); (item) != NULL; (item) = (item)->next)
+  for (type * (item) = (head); (item) != NULL; ll_iter(item))
 
 #define ll_foreach_back(type, item, tail)                                      \
-  for (type * (item) = (tail); (item) != NULL; (item) = (item)->prev)
+  for (type * (item) = (tail); (item) != NULL; ll_iter_back(item))
 
 #define ll_free(head)                                                          \
   do {                                                                         \
     if ((head) != NULL) {                                                      \
       while ((head)->next != NULL) {                                           \
-        (head) = (head)->next;                                                 \
+        ll_iter(head);                                                         \
         free((head)->prev);                                                    \
       }                                                                        \
       free((head));                                                            \
@@ -122,13 +125,13 @@
 #define ll_get_head(node)                                                      \
   do {                                                                         \
     while ((node)->prev != NULL)                                               \
-      (node) = (node)->prev;                                                   \
+      ll_iter_back(node);                                                      \
   } while (0)
 
 #define ll_get_tail(node)                                                      \
   do {                                                                         \
     while ((node)->next != NULL)                                               \
-      (node) = (node)->next;                                                   \
+      ll_iter(node);                                                           \
   } while (0)
 
 #endif // LL_H_
