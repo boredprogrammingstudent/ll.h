@@ -155,14 +155,14 @@
 
 #define ll_set_head(item)                                                      \
   do {                                                                         \
-    while ((node)->prev != NULL)                                               \
-      ll_iter_back(node);                                                      \
+    while ((item)->prev != NULL)                                               \
+      ll_iter_back(item);                                                      \
   } while (0)
 
 #define ll_set_tail(item)                                                      \
   do {                                                                         \
-    while ((node)->next != NULL)                                               \
-      ll_iter(node);                                                           \
+    while ((item)->next != NULL)                                               \
+      ll_iter(item);                                                           \
   } while (0)
 
 #define ll_get_head(type, node)                                                \
