@@ -175,6 +175,8 @@
 
  */
 
+#ifndef LL_NO_CLL
+
 #define cll_insert_after(node, item) ll_insert_after(node, item)
 #define cll_inster_before(node, item) ll_insert_before(node, item)
 #define cll_remove(item) ll_remove(item)
@@ -208,5 +210,7 @@
   })
 
 #define cll_free(cll) ll_free(cll)
+
+#endif // LL_NO_CLL
 
 #endif // LL_H_
