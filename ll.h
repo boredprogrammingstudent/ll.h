@@ -42,7 +42,7 @@
 #define ll_append_fixed(type, node, item)                                      \
   do {                                                                         \
     type *tail = ll_get_tail(type, node);                                      \
-    ll_insert_afer(tail, item);                                                \
+    ll_insert_after(tail, item);                                               \
   } while (0)
 
 #define ll_append_front_fixed(type, node, item)                                \
