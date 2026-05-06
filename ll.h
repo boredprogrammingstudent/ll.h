@@ -79,42 +79,49 @@
     }                                                                          \
   } while (0)
 
+#define ll_split_after(node)                                                   \
+  do {                                                                         \
+    (node)->next->prev = NULL;                                                 \
+    (node)->next       = NULL;                                                 \
+  } while (0)
+
+#define ll_split_before(node)                                                  \
+  do {                                                                         \
+    (node)->prev->next = NULL;                                                 \
+    (node)->prev       = NULL;                                                 \
+  } while (0)
+
 #define ll_iter(item) (item) = (item)->next
 #define ll_iter_back(item) (item) = (item)->prev
 
+#define ll_foreach(type, it, head)                                             \
+  for (type * (it) = (head); (it) != NULL; ll_iter(it))
+
+#define ll_foreach_back(type, it, tail)                                        \
+  for (type * (it) = (tail); (it) != NULL; ll_iter_back(it))
+
 #define ll_count(type, head)                                                   \
   ({                                                                           \
-    size_t count    = 0;                                                       \
-    type *it_##type = (head);                                                  \
-    while (it_##type) {                                                        \
-      ll_iter(it##type);                                                       \
-      ++count;                                                                 \
-    }                                                                          \
+    size_t count = 0;                                                          \
+    ll_foreach(type, it, head) { ++count; }                                    \
     count;                                                                     \
   })
 
 #define ll_count_back(type, tail)                                              \
   ({                                                                           \
-    size_t count    = 0;                                                       \
-    type *it_##type = (tail);                                                  \
-    while (it_##type) {                                                        \
-      ll_iter_back(it##type);                                                  \
-      ++count;                                                                 \
-    }                                                                          \
+    size_t count = 0;                                                          \
+    ll_foreach_back(type, it, tail) { ++count; }                               \
     count;                                                                     \
   })
-
-#define ll_foreach(type, item, head)                                           \
-  for (type * (item) = (head); (item) != NULL; ll_iter(item))
-
-#define ll_foreach_back(type, item, tail)                                      \
-  for (type * (item) = (tail); (item) != NULL; ll_iter_back(item))
 
 #define ll_free(head)                                                          \
   do {                                                                         \
     if ((head) != NULL) {                                                      \
+      if ((head)->prev != NULL)                                                \
+        (head)->prev->next = NULL;                                             \
       while ((head)->next != NULL) {                                           \
         ll_iter(head);                                                         \
+        (head)->prev->next = NULL;                                             \
         free((head)->prev);                                                    \
       }                                                                        \
       free((head));                                                            \
@@ -122,16 +129,84 @@
     }                                                                          \
   } while (0)
 
-#define ll_get_head(node)                                                      \
+#define ll_set_head(item)                                                      \
   do {                                                                         \
     while ((node)->prev != NULL)                                               \
       ll_iter_back(node);                                                      \
   } while (0)
 
-#define ll_get_tail(node)                                                      \
+#define ll_set_tail(item)                                                      \
   do {                                                                         \
     while ((node)->next != NULL)                                               \
       ll_iter(node);                                                           \
   } while (0)
+
+#define ll_get_head(type, node)                                                \
+  ({                                                                           \
+    type *it = (node);                                                         \
+    ll_set_head(it);                                                           \
+    it;                                                                        \
+  })
+
+#define ll_get_tail(type, node)                                                \
+  ({                                                                           \
+    type *it = (node);                                                         \
+    ll_set_tail(it);                                                           \
+    it;                                                                        \
+  })
+
+#define ll_make_cll(type, node)                                                \
+  do {                                                                         \
+    type *head = node;                                                         \
+    ll_set_head(head);                                                         \
+    type *tail = node;                                                         \
+    ll_set_tail(tail);                                                         \
+    head->prev = tail;                                                         \
+    tail->next = head;                                                         \
+  } while (0)
+
+/*
+
+===========================
+
+---   ---   CLL   ---   ---
+
+===========================
+
+ */
+
+#define cll_insert_after(node, item) ll_insert_after(node, item)
+#define cll_inster_before(node, item) ll_insert_before(node, item)
+#define cll_remove(item) ll_remove(item)
+#define cll_remove_and_free_next(node) ll_remove_and_free_next(node)
+#define cll_remove_and_free_prev(node) ll_remove_and_free_prev(node)
+#define cll_split_after(node) ll_split_after(node)
+#define cll_split_before(node) ll_split_before(node)
+#define cll_iter(item) ll_iter(item)
+#define cll_iter_back(item) ll_iter_back(item)
+
+#define cll_foreach(type, it, node)                                            \
+  for (type *it = (node); it != NULL;                                          \
+       it       = ((it->next == (node)) ? NULL : it->next))
+
+#define cll_foreach_back(type, it, node)                                       \
+  for (type *it = (node); it != NULL;                                          \
+       it       = ((it->prev == (node)) ? NULL : it->prev))
+
+#define cll_count(type, node)                                                  \
+  ({                                                                           \
+    size_t count = 0;                                                          \
+    cll_foreach(type, it, head) { ++count; }                                   \
+    count;                                                                     \
+  })
+
+#define cll_count_back(type, tail)                                             \
+  ({                                                                           \
+    size_t count = 0;                                                          \
+    cll_foreach_back(type, it, tail) { ++count; }                              \
+    count;                                                                     \
+  })
+
+#define cll_free(cll) ll_free(cll)
 
 #endif // LL_H_
